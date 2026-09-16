@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASMANA TIM - Inventory System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-container {
+            display: flex;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: #667eea;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+        }
+
+        .profile-btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table thead {
+            background: #f0f0f0;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table th {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-owner {
+            background: #667eea;
+            color: white;
+        }
+
+        .role-crew {
+            background: #f39c12;
+            color: white;
+        }
+
+        .role-operator {
+            background: #27ae60;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="logo">
+            <h1>📦 DASMANA TIM</h1>
+            <p>Inventory Management System</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Masukkan username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password" required>
+            </div>
+            <button type="submit">Login</button>
+            <p style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
+                Demo: username: <strong>owner</strong> | password: <strong>admin123</strong>
+            </p>
+        </form>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="hidden" style="display: none; width: 100%;">
+        <div class="dashboard-container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2>📦 DASMANA TIM</h2>
+                <a href="#" onclick="showSection('dashboard')" class="nav-link active">📊 Dashboard</a>
+                <a href="#" onclick="showSection('inventory')" class="nav-link">📦 Inventory</a>
+                <a href="#" onclick="showSection('barangmasuk')" class="nav-link">📈 Barang Masuk</a>
+                <a href="#" onclick="showSection('barangkeluar')" class="nav-link">📉 Barang Keluar</a>
+                <a href="#" onclick="showSection('transaksi')" class="nav-link">🛍️ Transaksi</a>
+                <a href="#" onclick="showSection('users')" class="nav-link" id="usersMenu">👥 Kelola User</a>
+                <a href="#" onclick="showSection('profile')" class="nav-link">👤 Profil</a>
+                <a href="#" onclick="logout()" class="nav-link">🚪 Logout</a>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="header">
+                    <div>
+                        <h1>Selamat Datang, <span id="usernameDisplay">User</span>!</h1>
+                        <p style="color: #999; margin-top: 5px;">Role: <span id="roleDisplay" class="role-badge">-</span></p>
+                    </div>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <h2>📊 Dashboard</h2>
+                    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px;">
+                            <h3 style="font-size: 14px; opacity: 0.9;">Total Barang</h3>
+                            <p style="font-size: 28px; font-weight: bold;" id="totalBarang">30</p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 8px;">
+                            <h3 style="font-size: 14px; opacity: 0.9;">Total Pengguna</h3>
+                            <p style="font-size: 28px; font-weight: bold;" id="totalUser">1</p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 8px;">
+                            <h3 style="font-size: 14px; opacity: 0.9;">Transaksi Hari Ini</h3>
+                            <p style="font-size: 28px; font-weight: bold;" id="totalTransaksi">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Section -->
+                <div id="inventory-section" class="content-section hidden">
+                    <h2>📦 Data Inventory</h2>
+                    <button class="btn-add" onclick="showAddInventoryForm()">+ Tambah Barang</button>
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Nama Barang</th>
+                                <th>Tempat/Lokasi</th>
+                                <th>Stok</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Barang Masuk Section -->
+                <div id="barangmasuk-section" class="content-section hidden">
+                    <h2>📈 Input Barang Masuk</h2>
+                    <div class="form-section">
+                        <h3>Form Barang Masuk</h3>
+                        <form id="barangmasukForm">
+                            <div class="form-group">
+                                <label>Kode Barang</label>
+                                <select id="kodeMasuk" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah</label>
+                                <input type="number" id="jumlahMasuk" placeholder="Jumlah barang" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Keterangan</label>
+                                <input type="text" id="keteranganMasuk" placeholder="Keterangan (opsional)">
+                            </div>
+                            <button type="submit" class="btn-add">Simpan Barang Masuk</button>
+                        </form>
+                    </div>
+                    <table id="barangmasukTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Kode</th>
+                                <th>Nama Barang</th>
+                                <th>Jumlah</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Barang Keluar Section -->
+                <div id="barangkeluar-section" class="content-section hidden">
+                    <h2>📉 Input Barang Keluar</h2>
+                    <div class="form-section">
+                        <h3>Form Barang Keluar</h3>
+                        <form id="barangkeluarForm">
+                            <div class="form-group">
+                                <label>Kode Barang</label>
+                                <select id="kodeKeluar" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah</label>
+                                <input type="number" id="jumlahKeluar" placeholder="Jumlah barang" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Keterangan</label>
+                                <input type="text" id="keteranganKeluar" placeholder="Keterangan (opsional)">
+                            </div>
+                            <button type="submit" class="btn-add">Simpan Barang Keluar</button>
+                        </form>
+                    </div>
+                    <table id="barangkeluarTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Kode</th>
+                                <th>Nama Barang</th>
+                                <th>Jumlah</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Transaksi Section -->
+                <div id="transaksi-section" class="content-section hidden">
+                    <h2>🛍️ Data Transaksi</h2>
+                    <div class="form-section">
+                        <h3>Form Transaksi Baru</h3>
+                        <form id="transaksiForm">
+                            <div class="form-group">
+                                <label>Nama Pembeli/User</label>
+                                <input type="text" id="namaPembeli" placeholder="Nama pembeli" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Kode Barang</label>
+                                <select id="kodeTransaksi" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah</label>
+                                <input type="number" id="jumlahTransaksi" placeholder="Jumlah" min="1" required>
+                            </div>
+                            <button type="submit" class="btn-add">Catat Transaksi</button>
+                        </form>
+                    </div>
+                    <table id="transaksiTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Nama Pembeli</th>
+                                <th>Kode Barang</th>
+                                <th>Jumlah</th>
+                                <th>Petugas</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Users Management Section -->
+                <div id="users-section" class="content-section hidden">
+                    <h2>👥 Kelola Pengguna</h2>
+                    <button class="btn-add" onclick="showAddUserForm()">+ Tambah Pengguna</button>
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Password</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Dibuat</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profile-section" class="content-section hidden">
+                    <h2>👤 Profil Saya</h2>
+                    <div style="margin-top: 20px;">
+                        <p><strong>Username:</strong> <span id="profileUsername">-</span></p>
+                        <p><strong>Role:</strong> <span id="profileRole" class="role-badge">-</span></p>
+                        <p><strong>Status:</strong> <span id="profileStatus">-</span></p>
+                        <p><strong>Tanggal Dibuat:</strong> <span id="profileCreated">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        const defaultInventory = [
+            {kode: 'DTS-01', nama: 'PSU SMPS', lokasi: '[Diisi Tempat]', stok: 5},
+            {kode: 'DTS-02', nama: 'TRAFO', lokasi: '[Diisi Tempat]', stok: 3},
+            {kode: 'DTS-03', nama: 'CSG AMPLI', lokasi: '[Diisi Tempat]', stok: 8},
+            {kode: 'DTS-04', nama: 'KABEL POWER', lokasi: '[Diisi Tempat]', stok: 15},
+            {kode: 'DTS-05', nama: 'ADAPTOR', lokasi: '[Diisi Tempat]', stok: 10},
+        ];
+
+        const defaultUser = {
+            username: 'owner',
+            password: 'admin123',
+            role: 'owner',
+            status: 'active',
+            created: new Date().toLocaleDateString('id-ID')
+        };
+
+        let currentUser = null;
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || defaultInventory;
+        let users = JSON.parse(localStorage.getItem('users')) || [defaultUser];
+        let barangMasuk = JSON.parse(localStorage.getItem('barangMasuk')) || [];
+        let barangKeluar = JSON.parse(localStorage.getItem('barangKeluar')) || [];
+        let transaksi = JSON.parse(localStorage.getItem('transaksi')) || [];
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const user = users.find(u => u.username === username && u.password === password && u.status === 'active');
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showDashboard();
+            } else {
+                alert('Username atau password salah!');
+            }
+        });
+
+        // Show Dashboard
+        function showDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.remove('hidden');
+            document.getElementById('usernameDisplay').textContent = currentUser.username;
+            document.getElementById('roleDisplay').textContent = currentUser.role.toUpperCase();
+            document.getElementById('roleDisplay').className = 'role-badge role-' + currentUser.role;
+
+            if (currentUser.role !== 'owner') {
+                document.getElementById('usersMenu').style.display = 'none';
+            }
+
+            updateDashboardStats();
+            loadInventoryTable();
+            loadDropdowns();
+            loadTransactionTable();
+        }
+
+        // Show Section
+        function showSection(section) {
+            document.querySelectorAll('[id$="-section"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(section + '-section').classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            event.target.closest('.nav-link').classList.add('active');
+
+            if (section === 'inventory') loadInventoryTable();
+            if (section === 'barangmasuk') loadBarangMasukTable();
+            if (section === 'barangkeluar') loadBarangKeluarTable();
+            if (section === 'transaksi') loadTransactionTable();
+            if (section === 'users') loadUsersTable();
+            if (section === 'profile') loadProfile();
+        }
+
+        // Update Dashboard Stats
+        function updateDashboardStats() {
+            document.getElementById('totalBarang').textContent = inventory.length;
+            document.getElementById('totalUser').textContent = users.length;
+            const today = new Date().toLocaleDateString('id-ID');
+            const todayTransactions = transaksi.filter(t => new Date(t.tanggal).toLocaleDateString('id-ID') === today).length;
+            document.getElementById('totalTransaksi').textContent = todayTransactions;
+        }
+
+        // Load Inventory Table
+        function loadInventoryTable() {
+            const tbody = document.querySelector('#inventoryTable tbody');
+            tbody.innerHTML = '';
+            inventory.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.kode}</td>
+                        <td>${item.nama}</td>
+                        <td><input type="text" value="${item.lokasi}" style="width: 100%; padding: 5px;" onchange="updateInventoryLokasi(${index}, this.value)"></td>
+                        <td>${item.stok}</td>
+                        <td>
+                            <button class="btn-small btn-edit" onclick="editInventory(${index})">Edit</button>
+                            <button class="btn-small btn-delete" onclick="deleteInventory(${index})">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Update Inventory Lokasi
+        function updateInventoryLokasi(index, lokasi) {
+            inventory[index].lokasi = lokasi;
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+        }
+
+        // Load Dropdowns
+        function loadDropdowns() {
+            const options = inventory.map(i => `<option value="${i.kode}">${i.kode} - ${i.nama}</option>`).join('');
+            document.getElementById('kodeMasuk').innerHTML = options;
+            document.getElementById('kodeKeluar').innerHTML = options;
+            document.getElementById('kodeTransaksi').innerHTML = options;
+        }
+
+        // Barang Masuk Handler
+        document.getElementById('barangmasukForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const kode = document.getElementById('kodeMasuk').value;
+            const jumlah = parseInt(document.getElementById('jumlahMasuk').value);
+            const keterangan = document.getElementById('keteranganMasuk').value;
+
+            barangMasuk.push({
+                tanggal: new Date().toLocaleDateString('id-ID'),
+                kode: kode,
+                nama: inventory.find(i => i.kode === kode).nama,
+                jumlah: jumlah,
+                keterangan: keterangan
+            });
+
+            // Update stok
+            const item = inventory.find(i => i.kode === kode);
+            item.stok += jumlah;
+
+            localStorage.setItem('barangMasuk', JSON.stringify(barangMasuk));
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+
+            this.reset();
+            loadBarangMasukTable();
+            loadInventoryTable();
+            alert('Barang masuk berhasil dicatat!');
+        });
+
+        // Load Barang Masuk Table
+        function loadBarangMasukTable() {
+            const tbody = document.querySelector('#barangmasukTable tbody');
+            tbody.innerHTML = '';
+            barangMasuk.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.tanggal}</td>
+                        <td>${item.kode}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.jumlah}</td>
+                        <td>${item.keterangan}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Barang Keluar Handler
+        document.getElementById('barangkeluarForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const kode = document.getElementById('kodeKeluar').value;
+            const jumlah = parseInt(document.getElementById('jumlahKeluar').value);
+            const keterangan = document.getElementById('keteranganKeluar').value;
+
+            const item = inventory.find(i => i.kode === kode);
+            if (item.stok < jumlah) {
+                alert('Stok tidak cukup!');
+                return;
+            }
+
+            barangKeluar.push({
+                tanggal: new Date().toLocaleDateString('id-ID'),
+                kode: kode,
+                nama: item.nama,
+                jumlah: jumlah,
+                keterangan: keterangan
+            });
+
+            item.stok -= jumlah;
+
+            localStorage.setItem('barangKeluar', JSON.stringify(barangKeluar));
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+
+            this.reset();
+            loadBarangKeluarTable();
+            loadInventoryTable();
+            alert('Barang keluar berhasil dicatat!');
+        });
+
+        // Load Barang Keluar Table
+        function loadBarangKeluarTable() {
+            const tbody = document.querySelector('#barangkeluarTable tbody');
+            tbody.innerHTML = '';
+            barangKeluar.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.tanggal}</td>
+                        <td>${item.kode}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.jumlah}</td>
+                        <td>${item.keterangan}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Transaksi Handler
+        document.getElementById('transaksiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const namaPembeli = document.getElementById('namaPembeli').value;
+            const kode = document.getElementById('kodeTransaksi').value;
+            const jumlah = parseInt(document.getElementById('jumlahTransaksi').value);
+
+            const item = inventory.find(i => i.kode === kode);
+            if (item.stok < jumlah) {
+                alert('Stok tidak cukup!');
+                return;
+            }
+
+            transaksi.push({
+                tanggal: new Date().toLocaleDateString('id-ID'),
+                namaPembeli: namaPembeli,
+                kode: kode,
+                nama: item.nama,
+                jumlah: jumlah,
+                petugas: currentUser.username
+            });
+
+            item.stok -= jumlah;
+
+            localStorage.setItem('transaksi', JSON.stringify(transaksi));
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+
+            this.reset();
+            loadTransactionTable();
+            loadInventoryTable();
+            updateDashboardStats();
+            alert('Transaksi berhasil dicatat!');
+        });
+
+        // Load Transaction Table
+        function loadTransactionTable() {
+            const tbody = document.querySelector('#transaksiTable tbody');
+            tbody.innerHTML = '';
+            transaksi.forEach(t => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${t.tanggal}</td>
+                        <td>${t.namaPembeli}</td>
+                        <td>${t.kode}</td>
+                        <td>${t.jumlah}</td>
+                        <td>${t.petugas}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Load Users Table
+        function loadUsersTable() {
+            const tbody = document.querySelector('#usersTable tbody');
+            tbody.innerHTML = '';
+            users.forEach((user, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.password}</td>
+                        <td><span class="role-badge role-${user.role}">${user.role.toUpperCase()}</span></td>
+                        <td>${user.status}</td>
+                        <td>${user.created}</td>
+                        <td>
+                            ${index > 0 ? `<button class="btn-small btn-delete" onclick="deleteUser(${index})">Hapus</button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Show Add User Form
+        function showAddUserForm() {
+            const username = prompt('Username:');
+            if (!username) return;
+            const password = prompt('Password:');
+            if (!password) return;
+            const role = prompt('Role (owner/crew/operator):');
+            if (!role) return;
+
+            const newUser = {
+                username: username,
+                password: password,
+                role: role.toLowerCase(),
+                status: 'active',
+                created: new Date().toLocaleDateString('id-ID')
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            loadUsersTable();
+            alert('Pengguna berhasil ditambahkan!');
+        }
+
+        // Delete User
+        function deleteUser(index) {
+            if (confirm('Yakin ingin menghapus pengguna ini?')) {
+                users.splice(index, 1);
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsersTable();
+            }
+        }
+
+        // Load Profile
+        function loadProfile() {
+            document.getElementById('profileUsername').textContent = currentUser.username;
+            document.getElementById('profileRole').textContent = currentUser.role.toUpperCase();
+            document.getElementById('profileRole').className = 'role-badge role-' + currentUser.role;
+            document.getElementById('profileStatus').textContent = currentUser.status === 'active' ? '🟢 Aktif' : '🔴 Non-Aktif';
+            document.getElementById('profileCreated').textContent = currentUser.created;
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                location.reload();
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('currentUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                showDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
